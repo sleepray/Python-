@@ -1,6 +1,5 @@
 # coding:utf-8
 import xlwt
-from urllib import parse
 import requests
 from bs4 import BeautifulSoup
 Url = "https://movie.douban.com/top250"
