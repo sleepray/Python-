@@ -64,9 +64,10 @@ def save_img(img_url):
         img = requests.get(img_url)
         if img.status_code == 200:
             file_path = '{0}.{1}'.format(md5(img.content).hexdigest(),'jpg')   #md5是将二进制数据转化为16位字符串，这里用作保存名字
-            with open("G://exercise//2019//tuchong//" + file_path, 'wb') as f:
-                f.write(img.content)
-                print('下载成功')
+            if not os.path.exists("G://exercise//2019//tuchong//" + file_path): #如果不存在这个文件，便保存
+                with open("G://exercise//2019//tuchong//" + file_path, 'wb') as f:
+                    f.write(img.content)
+                    print('下载成功')
         else:
             print("已经下载")
     except requests.ConnectionError:
@@ -78,7 +79,7 @@ def main(i):
 
 if __name__ == "__main__":
     pool = Pool()    #开启进程池
-    num = ([int(i) for i in range(1,40)])  #将循环数化为列表
+    num = ([int(i) for i in range(1,40)])  #将循环数化为列表,循环多少次为多少次Ajax请求
     pool.map(main,num) # map()函数开启多进程，第一个参数为运行函数，第二个参数为进程数列表
     pool.close()       # 关闭进程池
     pool.join()
