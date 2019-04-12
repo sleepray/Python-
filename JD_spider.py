@@ -1,4 +1,9 @@
 #coding:utf-8
+
+'''
+使用selenium爬取
+'''
+
 import pymongo
 import time
 from bs4 import BeautifulSoup
