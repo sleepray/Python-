@@ -2,6 +2,7 @@
 
 import os
 import requests
+import re
 from bs4 import BeautifulSoup
 import lxml,string,re,xlwt
 
@@ -28,6 +29,7 @@ sheet.write(0,2,'演员')
 sheet.write(0,3,'评分')
 sheet.write(0,4,'国家')
 sheet.write(0,5,'时间')
+sheet.write(0,6,'简介')
 
 #解析url并写入excel
 def lxml(url,num):
@@ -46,6 +48,11 @@ def lxml(url,num):
     img_list = soup.find(class_='related-pic-bd').find_all('img')
     img_title = soup.find('img').get('src')
     print('正在爬取： {0},评分：{1}'.format(title,score))
+
+    #判断标题是否有特殊字符，如果有就进行替换
+    unstrings = r'[:/\?*“<>|]'
+    if re.search(unstrings, title):
+        title = re.sub(unstrings, "-", title)
 
     #封面写入
     down_load(img_title,img_down + title + '//{}'.format(title) +'.jpg',img_down + title)
@@ -75,6 +82,11 @@ def lxml(url,num):
 
 #视频图片存入函数
 def down_load(img_url,path,path_title):
+    """
+    img_url:图片网址
+    path:图片保存地址
+    path_title：图片标题
+    """
     img = requests.get(img_url).content
     folder = os.path.exists(path_title)
     if not folder:
@@ -85,6 +97,7 @@ def down_load(img_url,path,path_title):
         with open(path, 'wb') as f:
              f.write(img)
 
+
 #获取排行榜上的每一个电影详情页的url
 def get_url(url):
     n = 0
@@ -94,7 +107,6 @@ def get_url(url):
         n += 1
         url = url_list.find('a').get('href')
         lxml(url,n)
-
 
 
 if __name__ == "__main__":
